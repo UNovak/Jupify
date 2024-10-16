@@ -21,6 +21,14 @@
 
     // Some stricter flags
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+
+    // import aliases
+    "paths": {
+      "@hono/*": ["./server/*"],
+      "@utils/*": ["./utils/*"],
+      "@db/*": ["./db/*"],
+      "@hooks/*": ["./hooks/*"]
+    }
   }
 }

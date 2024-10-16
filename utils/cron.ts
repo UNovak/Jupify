@@ -1,6 +1,6 @@
+import jupScrape from '@utils/scraper'
 import { CronJob } from 'cron'
 import ky from 'ky'
-import jupScrape from './scraper'
 
 const startCron = () => {
   const cron = new CronJob(
