@@ -1,0 +1,14 @@
+{
+  "name": "jupify",
+  "scripts": {
+    "dev": "bun run --hot server/index.ts",
+    "scrape": "bun run utils/scraper.ts"
+  },
+  "dependencies": {
+    "hono": "^4.6.5",
+    "puppeteer": "^23.5.3"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
