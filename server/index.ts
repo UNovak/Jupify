@@ -1,6 +1,8 @@
+import { notify } from '@utils/notify'
 import { Hono } from 'hono'
 
 const app = new Hono()
+const { sendMail } = notify()
 
 app.get('/', async (c) => {
   return c.text('Hello Hono!')
@@ -9,11 +11,8 @@ app.get('/', async (c) => {
 app.post('/update', async (c) => {
   const jup: ScraperResponse = await c.req.json()
   if (jup.status === 'Completed') return c.text('No vote in progress')
-  if (jup.status === 'In progress') {
-    // send email
-    return c.text('Vote ongoing')
-  }
-  return c.json('Unknown Error')
+  const res = await sendMail(process.env.MAIL as string)
+  return c.json(res)
 })
 
 export default {
