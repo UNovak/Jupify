@@ -2,7 +2,9 @@
   "name": "jupify",
   "scripts": {
     "dev": "bun run --hot server/index.ts",
-    "scrape": "bun run utils/scraper.ts"
+    "scrape": "bun run utils/scraper.ts",
+    "build": "bun build server/index.ts --outdir ./dist --target bun",
+    "start": "bun run dist/index.js"
   },
   "dependencies": {
     "cron": "^3.1.7",
