@@ -9,7 +9,6 @@
     "start": "bun run dist/index.js"
   },
   "dependencies": {
-    "cron": "^3.1.7",
     "ky": "^1.7.2",
     "puppeteer": "^23.5.3"
   },
