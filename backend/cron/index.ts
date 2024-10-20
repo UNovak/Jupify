@@ -8,7 +8,7 @@ const startCron = () => {
     '5 */8 * * *',
     async () => {
       const result = await scraper() // Run the scraper
-      ky.post('http://localhost:8000/update', {
+      ky.post(`${process.env.DOMAIN}/update`, {
         // Send the data to the server
         json: {
           ...result,

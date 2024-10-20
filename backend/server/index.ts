@@ -17,6 +17,7 @@ app.post('/update', async (c) => {
 export default {
   fetch: app.fetch,
   port: process.env.PORT || 3000,
+  host: process.env.HOST || 'localhost',
 }
 
 type ScraperResponse = {
