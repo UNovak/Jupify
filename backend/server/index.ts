@@ -1,8 +1,7 @@
-import { notify } from '@utils/notify'
 import { Hono } from 'hono'
+import { sendMail } from './sendMail'
 
 const app = new Hono()
-const { sendMail } = notify()
 
 app.get('/', async (c) => {
   return c.text('Hello Hono!')

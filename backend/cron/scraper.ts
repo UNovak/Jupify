@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer'
 
-const jupScrape = async () => {
+const scraper = async () => {
   const url = 'https://vote.jup.ag/'
 
   // Launch the browser and open a new blank page
@@ -44,4 +44,4 @@ const jupScrape = async () => {
   return result
 }
 
-export default jupScrape
+export { scraper }

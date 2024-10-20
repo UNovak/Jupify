@@ -1,13 +1,13 @@
-import jupScrape from '@utils/scraper'
 import { CronJob } from 'cron'
 import ky from 'ky'
+import { scraper } from './scraper'
 
 const startCron = () => {
-  const cron = new CronJob(
+  const cronJob = new CronJob(
     // Every 8 hours at hh:05
     '5 */8 * * *',
     async () => {
-      const result = await jupScrape() // Run the scraper
+      const result = await scraper() // Run the scraper
       ky.post('http://localhost:8000/update', {
         // Send the data to the server
         json: {
