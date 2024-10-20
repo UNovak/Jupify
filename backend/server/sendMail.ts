@@ -6,7 +6,7 @@ const sendMail = async (recipient: string) => {
       apiKey: process.env.MAIL_API as string,
     })
 
-    const sentFrom = new Sender(`jupify@${process.env.DOMAIN}`, 'Jupify')
+    const sentFrom = new Sender(`jupify@${process.env.DOMAIN}`, 'JupifyBot')
     const recipients = [new Recipient(recipient)]
 
     const emailParams = new EmailParams().setFrom(sentFrom).setTo(recipients).setReplyTo(sentFrom).setSubject('🚨 Vote Alert')
@@ -16,7 +16,7 @@ const sendMail = async (recipient: string) => {
               <h1 >Jupify</h1>
                 <p>This is a notification about the Jup.ag voting process.</p>
                 <p>Check out the voting page: <a href="https://vote.jup.ag/">Vote Now</a></p>
-                <div><a href="${process.env.DOMAIN}/">unsubscribe</a></div>
+                <div><a href="${process.env.SERVER}/unsubscribe">unsubscribe</a></div>
             </body>
           </html>
         `)
