@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for cron-empty-sky-9331 on 2024-10-20T21:11:38+02:00
+# fly.toml app configuration file generated for jupify-cron on 2024-10-20T22:17:45+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,6 +7,9 @@ app = 'jupify-cron'
 primary_region = 'ams'
 
 [build]
+
+[env]
+  DOMAIN = 'https://jupify.fly.dev'
 
 [http_service]
   internal_port = 3000
@@ -17,6 +20,6 @@ primary_region = 'ams'
   processes = ['app']
 
 [[vm]]
-  memory = '256mb'
+  memory = '1GB'
   cpu_kind = 'shared'
   cpus = 1

@@ -8,11 +8,13 @@ const scraper = async () => {
   try {
     // Launch the browser and open a new blank page
     browser = await puppeteer.launch({
+      timeout: 0,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     })
     const page = await browser.newPage()
 
     // Navigate the page to a URL.
+    page.setDefaultNavigationTimeout(0)
     await page.goto(url)
 
     // Wait for the table to appear
