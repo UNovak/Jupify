@@ -12,18 +12,25 @@ const scraper = async () => {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     })
     const page = await browser.newPage()
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+    )
 
     // Navigate the page to a URL.
     page.setDefaultNavigationTimeout(0)
     await page.goto(url)
 
     // Wait for the table to appear
-    await page.waitForSelector('tbody')
+    await page.waitForSelector('tbody', { timeout: 120000 })
 
     // Wait until at least one row contains the value "Completed"
     await page.waitForFunction(() => {
       const rows = Array.from(document.querySelectorAll('tbody tr'))
-      return rows.some((row) => Array.from(row.querySelectorAll('td')).some((td) => td.textContent?.includes('Completed')))
+      return rows.some((row) =>
+        Array.from(row.querySelectorAll('td')).some((td) =>
+          td.textContent?.includes('Completed'),
+        ),
+      )
     })
 
     // Once the table is loaded, select the first row
