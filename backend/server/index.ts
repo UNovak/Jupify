@@ -22,6 +22,16 @@ app.post('/update', async (c) => {
   return c.json(res)
 })
 
+app.options('/subscribe', corsMiddleware, async (c) => {
+  return c.status(200)
+})
+
+app.post('/subscribe', corsMiddleware, async (c) => {
+  const payload = await c.req.json()
+  console.log('payload: ', payload)
+  return c.json({ status: 200 })
+})
+
 export default {
   fetch: app.fetch,
   port: process.env.PORT || 3000,
