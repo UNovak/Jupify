@@ -1,5 +1,13 @@
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { sendMail } from './sendMail'
+
+// CORS middleware
+const corsMiddleware = cors({
+  origin: ['http://localhost:4321'],
+  allowMethods: ['GET', 'POST', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'DNT', 'User-Agent'],
+})
 
 const app = new Hono()
 
