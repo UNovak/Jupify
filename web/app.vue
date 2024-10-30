@@ -6,5 +6,11 @@ useHead({
 </script>
 
 <template>
-  <div>Jupify</div>
+  <div class="from-grad-start to-grad-end min-h-screen w-full bg-gradient-to-r">
+    <Navbar />
+    <div class="items-center flex min-h-[calc(100vh-160px)] w-full flex-col">
+      <NuxtPage />
+    </div>
+    <Footer />
+  </div>
 </template>
