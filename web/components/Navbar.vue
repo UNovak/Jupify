@@ -4,16 +4,24 @@ const route = useRoute()
 const isHome = computed(() => route.path === '/')
 
 // link objects array
+let id = 0
+const current = ref(0)
 const links = ref([
-  { label: 'Subscribe', isActive: true, ref: 'subscribe' },
-  { label: 'About', isActive: false, ref: 'about' },
-  { label: 'Stats', isActive: false, ref: 'stats' },
-  { label: 'Contact me', isActive: false, ref: 'contact' },
+  { label: 'Subscribe', isActive: true, ref: 'subscribe', id: id++ },
+  { label: 'About', isActive: false, ref: 'about', id: id++ },
+  { label: 'Stats', isActive: false, ref: 'stats', id: id++ },
+  { label: 'Contact me', isActive: false, ref: 'contact', id: id++ },
 ])
 
 // handles navigating to a different section of the homepage
 const scroll = (link) => {
-  console.log('link: ', link)
+  links.value[current.value].isActive = false // disable the prev active button
+  current.value = link.id // set the current as the clicked link
+  links.value[current.value].isActive = true // set the isActive for current button
+
+  // scroll to the targeted element
+  const target = document.getElementById(link.ref)
+  target.scrollIntoView({ behavior: 'smooth' })
 }
 </script>
 
