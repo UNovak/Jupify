@@ -2,10 +2,11 @@
 // figure out if navLinks should be displayed
 const route = useRoute()
 const isHome = computed(() => route.path === '/')
-
-// link objects array
 let id = 0
 const current = ref(0)
+let inScroll = false
+
+// link objects array
 const links = ref([
   { label: 'Subscribe', isActive: true, ref: 'subscribe', id: id++ },
   { label: 'About', isActive: false, ref: 'about', id: id++ },
@@ -13,16 +14,57 @@ const links = ref([
   { label: 'Contact me', isActive: false, ref: 'contact', id: id++ },
 ])
 
+// update active style to match displayed section
+const updateActive = (link) => {
+  links.value[current.value].isActive = false // disable the prev active button
+  current.value = link.id // set current as the id of active section
+  links.value[current.value].isActive = true // set the isActive for current button
+}
+
 // handles navigating to a different section of the homepage
 const scroll = (link) => {
-  links.value[current.value].isActive = false // disable the prev active button
-  current.value = link.id // set the current as the clicked link
-  links.value[current.value].isActive = true // set the isActive for current button
+  if (inScroll) return
+
+  inScroll = true // disable observer
+  updateActive(link)
 
   // scroll to the targeted element
   const target = document.getElementById(link.ref)
   target.scrollIntoView({ behavior: 'smooth' })
+
+  // wait 0.4s before enabling observer
+  setTimeout(() => {
+    inScroll = false
+  }, 400)
 }
+
+// make each section observable on mount
+onMounted(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      // runs when scrolling manually
+      if (!inScroll) {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            // entry currently in view
+            const link = links.value.find(
+              (link) => link.ref === entry.target.id,
+            )
+            updateActive(link) // update active style
+          }
+        }
+      }
+    },
+    { threshold: 0.6 },
+  )
+
+  for (const link of links.value) {
+    const target = document.getElementById(link.ref)
+    if (target) {
+      observer.observe(target)
+    }
+  }
+})
 </script>
 
 <template>
