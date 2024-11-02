@@ -1,4 +1,12 @@
-<script setup>
+<script setup lang="ts">
+// Define the Link type
+type Link = {
+  label: string
+  isActive: boolean
+  ref: string
+  id: number
+}
+
 // figure out if navLinks should be displayed
 const route = useRoute()
 const isHome = computed(() => route.path === '/')
@@ -7,7 +15,7 @@ const current = ref(0)
 let inScroll = false
 
 // link objects array
-const links = ref([
+const links = ref<Link[]>([
   { label: 'Subscribe', isActive: true, ref: 'subscribe', id: id++ },
   { label: 'About', isActive: false, ref: 'about', id: id++ },
   { label: 'Stats', isActive: false, ref: 'stats', id: id++ },
@@ -15,14 +23,14 @@ const links = ref([
 ])
 
 // update active style to match displayed section
-const updateActive = (link) => {
+const updateActive = (link: Link) => {
   links.value[current.value].isActive = false // disable the prev active button
   current.value = link.id // set current as the id of active section
   links.value[current.value].isActive = true // set the isActive for current button
 }
 
 // handles navigating to a different section of the homepage
-const scroll = (link) => {
+const scroll = (link: Link) => {
   if (inScroll) return
 
   inScroll = true // disable observer
@@ -30,7 +38,7 @@ const scroll = (link) => {
 
   // scroll to the targeted element
   const target = document.getElementById(link.ref)
-  target.scrollIntoView({ behavior: 'smooth' })
+  target?.scrollIntoView({ behavior: 'smooth' })
 
   // wait 0.4s before enabling observer
   setTimeout(() => {
@@ -50,7 +58,7 @@ onMounted(() => {
             const link = links.value.find(
               (link) => link.ref === entry.target.id,
             )
-            updateActive(link) // update active style
+            if (link) updateActive(link) // update active style
           }
         }
       }
