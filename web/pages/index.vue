@@ -7,6 +7,7 @@
         `Tired of forgetting  to vote on Jupiter DAO?\nVerify your email and subscribe to be notified\nwhen a new vote opens`
       }}
     </template>
+    <SubscribeForm />
   </Section>
 
   <!-- about -->
@@ -42,5 +43,6 @@
         GitHub
       </NuxtLink>
     </template>
+    <ContactForm />
   </Section>
 </template>

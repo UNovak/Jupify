@@ -1,0 +1,29 @@
+<script setup lang="ts">
+const email = ref('')
+
+const subscribe = () => {
+  console.log(email.value)
+  // submit form here
+}
+</script>
+
+<template>
+  <form class="flex flex-col items-center gap-8" @submit.prevent="subscribe">
+    <div class="inline-flex justify-center gap-5">
+      <Input
+        isRequired
+        v-model:model-value="email"
+        type="email"
+        placeholder="Your email" />
+      <Button>Notify me</Button>
+    </div>
+    <span
+      class="font-primary w-1/2 text-center text-base leading-normal text-white/40">
+      Disclaimer: I can’t guarantee 100% accuracy. Please use this as a helpful
+      reminder rather than your only source for vote tracking.
+    </span>
+    <span class="text-base leading-5 text-white/40">
+      By signing up, you agree to the Terms of Service
+    </span>
+  </form>
+</template>
