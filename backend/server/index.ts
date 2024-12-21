@@ -1,13 +1,5 @@
 import { Hono } from 'hono'
-import { cors } from 'hono/cors'
 import { sendMail } from './sendMail'
-
-// CORS middleware
-const corsMiddleware = cors({
-  origin: ['http://localhost:4321'],
-  allowMethods: ['GET', 'POST', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'DNT', 'User-Agent'],
-})
 
 const app = new Hono()
 
@@ -15,21 +7,12 @@ app.get('/', async (c) => {
   return c.text('Hello Hono!')
 })
 
+// Endpoint to receive scrapper data
 app.post('/update', async (c) => {
   const jup: ScraperResponse = await c.req.json()
   if (jup.status === 'Completed') return c.text('No vote in progress')
   const res = await sendMail(process.env.MAIL as string)
   return c.json(res)
-})
-
-app.options('/subscribe', corsMiddleware, async (c) => {
-  return c.status(200)
-})
-
-app.post('/subscribe', corsMiddleware, async (c) => {
-  const payload = await c.req.json()
-  console.log('payload: ', payload)
-  return c.json({ status: 200 })
 })
 
 export default {
