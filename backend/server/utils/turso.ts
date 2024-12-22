@@ -45,7 +45,7 @@ export const verify = async (email: string, token: string) => {
 }
 
 // remove a row from subscribers table
-export const unsubscribe = async (unsubscribe_token: string, email: string) => {
+export const unsubscribe = async (email: string, unsubscribe_token: string) => {
   try {
     await turso.execute({
       sql: 'DELETE FROM subscribers WHERE unsubscribe_token = :unsubscribe_token AND email = :email',

@@ -55,7 +55,7 @@ app.patch('/subscribers/verify-email', async (c) => {
   const { email } = await verifyToken(token, Bun.env.SECRET as string)
   console.log('requested virification for: ', email)
 
-  const res = await verify(token, email as string)
+  const res = await verify(email as string, token)
   if (res) return c.text(`subscription confirmed for ${email}`)
   return c.text(`unable to verify ${email}`)
 })
@@ -67,7 +67,7 @@ app.get('/subscribers/unsubscribe', async (c) => {
   const { email } = await verifyToken(token, Bun.env.INFINITE_SECRET as string)
 
   // unsubscribe logic with the database
-  const res = await unsubscribe(token, email as string)
+  const res = await unsubscribe(email as string, token)
   if (res) return c.text('unsubscribe success')
   return c.text('unsubscribe error')
 })
