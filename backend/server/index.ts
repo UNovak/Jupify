@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { sendMail } from './sendMail'
 import { generateToken, verifyToken } from './utils/token'
-import { subscribe, unsubscribe } from './utils/turso'
+import { subscribe, unsubscribe, verify } from './utils/turso'
 
 const app = new Hono()
 
@@ -47,6 +47,17 @@ app.post('/subscribers', async (c) => {
     token: token,
     unsubscribe_token: unsubscribe_token,
   })
+})
+
+// Verify the subscriber
+app.patch('/subscribers/verify-email', async (c) => {
+  const token = c.req.query('token') as string
+  const { email } = await verifyToken(token, Bun.env.SECRET as string)
+  console.log('requested virification for: ', email)
+
+  const res = await verify(token, email as string)
+  if (res) return c.text(`subscription confirmed for ${email}`)
+  return c.text(`unable to verify ${email}`)
 })
 
 // Delete from subscribers table and redirects to fronted success || error page
