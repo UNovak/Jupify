@@ -43,7 +43,9 @@ app.post('/subscribers', async (c) => {
   // server response
   return c.json({
     status: 201,
-    message: `Inserted ${email}`,
+    email: email,
+    token: token,
+    unsubscribe_token: unsubscribe_token,
   })
 })
 
