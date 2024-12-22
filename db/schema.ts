@@ -7,6 +7,7 @@ export const subscribers = sqliteTable('subscribers', {
   created_at: text().default(sql`(CURRENT_TIMESTAMP)`), // when the email was added
   status: text().default('subscribed'), // subscribed || unsubscribed
   token: text(), // JWT token generated from email to verify subscription
+  unsubscribe_token: text(), // JWT with no expiration date
   verified: integer({ mode: 'boolean' }).default(false).notNull(),
   last_update: text().default(sql`(CURRENT_TIMESTAMP)`), // date ISO8601 format of last change
 })
