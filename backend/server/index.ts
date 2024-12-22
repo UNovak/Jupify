@@ -50,7 +50,7 @@ app.post('/subscribers', async (c) => {
 })
 
 // Verify the subscriber
-app.patch('/subscribers/verify-email', async (c) => {
+app.get('/subscribers/verify-email', async (c) => {
   const token = c.req.query('token') as string
   const { email } = await verifyToken(token, Bun.env.SECRET as string)
   console.log('requested virification for: ', email)
