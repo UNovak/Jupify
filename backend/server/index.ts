@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { sendMail } from './sendMail'
-import { subscribe } from './utils/turso'
 import { generateToken, verifyToken } from './utils/token'
+import { subscribe, unsubscribe } from './utils/turso'
 
 const app = new Hono()
 
@@ -45,6 +45,18 @@ app.post('/subscribers', async (c) => {
     status: 201,
     message: `Inserted ${email}`,
   })
+})
+
+// Delete from subscribers table and redirects to fronted success || error page
+app.get('/subscribers/unsubscribe', async (c) => {
+  const token = c.req.query('unsubscribe_token') as string
+  console.log(`requested unsubscribe for ${token}`)
+  const { email } = await verifyToken(token, Bun.env.INFINITE_SECRET as string)
+
+  // unsubscribe logic with the database
+  const res = await unsubscribe(token, email as string)
+  if (res) return c.text('unsubscribe success')
+  return c.text('unsubscribe error')
 })
 
 export default {
