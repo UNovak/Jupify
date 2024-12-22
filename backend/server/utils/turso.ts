@@ -29,6 +29,19 @@ export const subscribe = async (
   return true
 }
 
+export const unsubscribe = async (unsubscribe_token: string, email: string) => {
+  try {
+    await turso.execute({
+      sql: 'DELETE FROM subscribers WHERE unsubscribe_token = :unsubscribe_token AND email = :email',
+      args: { unsubscribe_token: unsubscribe_token, email: email },
+    })
+    return true
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+}
+
 // return all emails from the database
 export const getSubscribers = async () => {
   try {
