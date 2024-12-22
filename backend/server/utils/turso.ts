@@ -29,6 +29,20 @@ export const subscribe = async (
   return true
 }
 
+export const verify = async (email: string, token: string) => {
+  try {
+    const res = await turso.execute({
+      sql: 'UPDATE subscribers SET verified = 1 WHERE email = ? AND token = ?',
+      args: [email, token],
+    })
+    console.log('verification response: ', res)
+  } catch (err) {
+    console.log(err)
+    return false
+  }
+  return true
+}
+
 export const unsubscribe = async (unsubscribe_token: string, email: string) => {
   try {
     await turso.execute({
