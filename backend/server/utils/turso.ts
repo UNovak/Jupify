@@ -29,6 +29,7 @@ export const subscribe = async (
   return true
 }
 
+// change value of verified to true
 export const verify = async (email: string, token: string) => {
   try {
     const res = await turso.execute({
@@ -43,6 +44,7 @@ export const verify = async (email: string, token: string) => {
   return true
 }
 
+// remove a row from subscribers table
 export const unsubscribe = async (unsubscribe_token: string, email: string) => {
   try {
     await turso.execute({
