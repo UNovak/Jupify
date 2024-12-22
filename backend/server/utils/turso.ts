@@ -14,7 +14,7 @@ export const subscribe = async (
   unsubscribe_token: string,
 ) => {
   try {
-    await turso.execute({
+    const { rowsAffected } = await turso.execute({
       sql: 'INSERT INTO subscribers (email,token,unsubscribe_token) VALUES (:email, :token, :unsubscribe_token)',
       args: {
         email: email,
@@ -22,35 +22,39 @@ export const subscribe = async (
         unsubscribe_token: unsubscribe_token,
       },
     })
+    if (rowsAffected === 0) return false
+    return true
   } catch (err) {
     console.log(err)
     return false
   }
-  return true
 }
 
 // change value of verified to true
 export const verify = async (email: string, token: string) => {
   try {
-    const res = await turso.execute({
+    const { rowsAffected } = await turso.execute({
       sql: 'UPDATE subscribers SET verified = 1 WHERE email = ? AND token = ?',
       args: [email, token],
     })
-    console.log('verification response: ', res)
+
+    if (rowsAffected === 0) return false
+    return true
   } catch (err) {
     console.log(err)
     return false
   }
-  return true
 }
 
 // remove a row from subscribers table
 export const unsubscribe = async (email: string, unsubscribe_token: string) => {
   try {
-    await turso.execute({
+    const { rowsAffected } = await turso.execute({
       sql: 'DELETE FROM subscribers WHERE unsubscribe_token = :unsubscribe_token AND email = :email',
       args: { unsubscribe_token: unsubscribe_token, email: email },
     })
+
+    if (rowsAffected === 0) return false
     return true
   } catch (err) {
     console.log(err)
