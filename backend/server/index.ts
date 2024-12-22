@@ -1,7 +1,7 @@
 import { Hono } from 'hono'
 import { sendMail } from './sendMail'
-import { generateToken } from './utils/token'
 import { subscribe } from './utils/turso'
+import { generateToken, verifyToken } from './utils/token'
 
 const app = new Hono()
 
@@ -21,8 +21,8 @@ app.post('/update', async (c) => {
 app.post('/subscribers', async (c) => {
   const { email } = await c.req.json()
   const token = await generateToken(email, 30) // create a JWT valid for 30 minutes
-  console.log(token)
-  const res = await subscribe(email, token) // insert into db
+  const unsubscribe_token = await generateToken(email) // create a never expiring JWT
+  const res = await subscribe(email, token, unsubscribe_token) // insert into db
 
   // if insert !ok
   if (!res) {

@@ -8,11 +8,19 @@ export const turso = createClient({
 console.log('connected db: ', process.env.TURSO_DATABASE_URL)
 
 // add an email to the database
-export const subscribe = async (email: string, token: string) => {
+export const subscribe = async (
+  email: string,
+  token: string,
+  unsubscribe_token: string,
+) => {
   try {
     await turso.execute({
-      sql: 'INSERT INTO subscribers (email,token) VALUES (:email, :token)',
-      args: { email: email, token: token },
+      sql: 'INSERT INTO subscribers (email,token,unsubscribe_token) VALUES (:email, :token, :unsubscribe_token)',
+      args: {
+        email: email,
+        token: token,
+        unsubscribe_token: unsubscribe_token,
+      },
     })
   } catch (err) {
     console.log(err)
