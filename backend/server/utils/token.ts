@@ -1,4 +1,5 @@
 import { sign, verify } from 'hono/jwt'
+import type { DecodedToken } from '../types'
 
 export const generateToken = async (email: string, time?: number) => {
   const payload = {
@@ -14,5 +15,5 @@ export const generateToken = async (email: string, time?: number) => {
 
 export const verifyToken = async (token: string, secret: string) => {
   const decodedToken = await verify(token, secret)
-  return decodedToken
+  return decodedToken as DecodedToken
 }

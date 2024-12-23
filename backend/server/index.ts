@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { sendVerificationEmail } from './email/verification'
 import { sendMail } from './sendMail'
+import type { ScrapedData } from './types'
 import { generateToken, verifyToken } from './utils/token'
 import { subscribe, unsubscribe, verify } from './utils/turso'
 
@@ -12,8 +13,8 @@ app.get('/', async (c) => {
 
 // Endpoint to receive scrapper data
 app.post('/update', async (c) => {
-  const jup: ScraperResponse = await c.req.json()
-  if (jup.status === 'Completed') return c.text('No vote in progress')
+  const scrapedData: ScrapedData = await c.req.json()
+  if (scrapedData.status === 'Completed') return c.text('No vote in progress')
   const res = await sendMail(process.env.MAIL as string)
   return c.json(res)
 })
@@ -51,7 +52,7 @@ app.get('/subscribers/verify-email', async (c) => {
   const { email } = await verifyToken(token, Bun.env.SECRET as string)
   console.log('requested virification for: ', email)
 
-  const res = await verify(email as string, token)
+  const res = await verify(email, token)
   if (res) return c.text(`subscription confirmed for ${email}`)
   return c.text(`unable to verify ${email}`)
 })
@@ -63,7 +64,7 @@ app.get('/subscribers/unsubscribe', async (c) => {
   const { email } = await verifyToken(token, Bun.env.INFINITE_SECRET as string)
 
   // unsubscribe logic with the database
-  const res = await unsubscribe(email as string, token)
+  const res = await unsubscribe(email, token)
   if (res) return c.text('unsubscribe success')
   return c.text('unsubscribe error')
 })
@@ -72,13 +73,4 @@ export default {
   fetch: app.fetch,
   port: process.env.PORT || 3000,
   host: process.env.HOST || 'localhost',
-}
-
-type ScraperResponse = {
-  title: string
-  voted: string
-  status: string
-  result: string
-  start: string
-  end: string
 }
