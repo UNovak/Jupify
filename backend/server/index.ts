@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { sendVerificationEmail } from './email/verification'
 import { sendMail } from './sendMail'
 import { generateToken, verifyToken } from './utils/token'
 import { subscribe, unsubscribe, verify } from './utils/turso'
@@ -33,12 +34,7 @@ app.post('/subscribers', async (c) => {
   }
 
   // if insert sucessfull
-
-  /*
-
-    implement sending a verification email here
-
-    ) */
+  const mailRes = await sendVerificationEmail(email, token, unsubscribe_token)
 
   // server response
   return c.json({
