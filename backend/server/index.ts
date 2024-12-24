@@ -1,9 +1,9 @@
 import { Hono } from 'hono'
+import { sendNotificationEmails } from './email/notifications'
 import { sendVerificationEmail } from './email/verification'
-import { sendMail } from './sendMail'
 import type { ScrapedData } from './types'
 import { generateToken, verifyToken } from './utils/token'
-import { subscribe, unsubscribe, verify } from './utils/turso'
+import { getSubscribers, subscribe, unsubscribe, verify } from './utils/turso'
 
 const app = new Hono()
 
@@ -15,7 +15,15 @@ app.get('/', async (c) => {
 app.post('/update', async (c) => {
   const scrapedData: ScrapedData = await c.req.json()
   if (scrapedData.status === 'Completed') return c.text('No vote in progress')
-  const res = await sendMail(process.env.MAIL as string)
+
+  const subscribers = await getSubscribers() // get all verified subscribers from db
+
+  // check that there are subscribers
+  if (subscribers.length === 0) {
+    return c.json({ status: 500, message: 'no subscribers' })
+  }
+
+  const res = await sendNotificationEmails(subscribers) // send notification email in bulk
   return c.json(res)
 })
 
