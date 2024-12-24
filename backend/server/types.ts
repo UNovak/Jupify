@@ -11,3 +11,8 @@ export type DecodedToken = {
   email: string
   exp?: number
 }
+
+export type Subscriber = {
+  email: string
+  unsubscribe_token: string
+}

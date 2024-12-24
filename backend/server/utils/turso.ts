@@ -1,4 +1,5 @@
 import { createClient } from '@libsql/client'
+import type { Subscriber } from '../types'
 
 export const turso = createClient({
   url: Bun.env.TURSO_DATABASE_URL || 'http://127.0.0.1:8080',
@@ -62,12 +63,25 @@ export const unsubscribe = async (email: string, unsubscribe_token: string) => {
   }
 }
 
-// return all emails from the database
+// return all verified subscribers from the database
 export const getSubscribers = async () => {
   try {
-    const { rows } = await turso.execute('SELECT * FROM subscribers')
-    return rows
+    const { rows } = await turso.execute(
+      'SELECT email,unsubscribe_token FROM subscribers WHERE verified = 1',
+    )
+
+    // only take the necessary values from each row
+    const res = rows.map((row) => {
+      return {
+        email: row[0] as string,
+        unsubscribe_token: row[1] as string,
+      } as Subscriber
+    })
+
+    console.log(res)
+    return res
   } catch (err) {
     console.log(err)
+    throw err
   }
 }
