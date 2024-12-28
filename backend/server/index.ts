@@ -3,7 +3,15 @@ import { sendNotificationEmails } from './email/notifications'
 import { sendVerificationEmail } from './email/verification'
 import type { ScrapedData } from './types'
 import { generateToken, verifyToken } from './utils/token'
-import { getSubscribers, subscribe, unsubscribe, verify } from './utils/turso'
+import {
+  getSubscribers,
+  getVote,
+  newVote,
+  subscribe,
+  unsubscribe,
+  updateVote,
+  verify,
+} from './utils/turso'
 
 const app = new Hono()
 
@@ -14,16 +22,34 @@ app.get('/', async (c) => {
 // Endpoint to receive scrapper data
 app.post('/update', async (c) => {
   const scrapedData: ScrapedData = await c.req.json()
+  const { title, start, end } = scrapedData
+
+  // check if its a completed vote, if yes dont continue
   if (scrapedData.status === 'Completed') return c.text('No vote in progress')
 
-  const subscribers = await getSubscribers() // get all verified subscribers from db
+  // check if the vote already exists and emails were already sent if yes, dont continue
+  const vote = await getVote(title)
+  if (vote && vote.length > 0) return c.text('Already notified about this vote')
+
+  // if there is no such vote, make a new entry
+  const createdVote = await newVote(title, start, end)
+
+  // get all verified subscribers from db
+  const subscribers = await getSubscribers()
+  const len = subscribers.length
 
   // check that there are subscribers
-  if (subscribers.length === 0) {
-    return c.json({ status: 500, message: 'no subscribers' })
-  }
+  if (len === 0) return c.json({ status: 500, message: 'no subscribers' })
 
-  const res = await sendNotificationEmails(subscribers) // send notification email in bulk
+  // send notification emails
+  const res = await sendNotificationEmails(subscribers)
+  const { status, bulk_id, message } = res
+  if (status !== 202) return res // handle any errors
+
+  // update the people_notified field for this spacific vote, set notified value to 1
+  await updateVote(title, len)
+
+  // return something ...
   return c.json(res)
 })
 
