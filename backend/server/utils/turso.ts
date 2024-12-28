@@ -85,3 +85,41 @@ export const getSubscribers = async () => {
     throw err
   }
 }
+
+export const getVote = async (title: string) => {
+  try {
+    const { rows } = await turso.execute({
+      sql: 'SELECT * FROM votes WHERE title = ?',
+      args: [title],
+    })
+    return rows
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export const newVote = async (title: string, start: string, end: string) => {
+  try {
+    const res = await turso.execute({
+      sql: 'INSERT INTO votes (title,start,end) VALUES (?, ?, ?)',
+      args: [title, start, end],
+    })
+    console.log(res)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export const updateVote = async (title: string, count: number) => {
+  try {
+    const res = await turso.execute({
+      sql: 'UPDATE votes SET people_notified = ?, notified = 1 WHERE title = ?',
+      args: [count, title],
+    })
+    console.log(res)
+    return res
+  } catch (err) {
+    console.log(err)
+  }
+}
