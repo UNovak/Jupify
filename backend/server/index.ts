@@ -21,36 +21,37 @@ app.get('/', async (c) => {
 
 // Endpoint to receive scrapper data
 app.post('/update', async (c) => {
-  const scrapedData: ScrapedData = await c.req.json()
-  const { title, start, end } = scrapedData
+  const { title, start, end, status } = (await c.req.json()) as ScrapedData
 
   // check if its a completed vote, if yes dont continue
-  if (scrapedData.status === 'Completed') return c.text('No vote in progress')
+  if (status === 'Completed')
+    return c.json({ status: 200, message: 'No vote in progress' })
 
   // check if the vote already exists and emails were already sent if yes, dont continue
-  const vote = await getVote(title)
-  if (vote && vote.length > 0) return c.text('Already notified about this vote')
+  const voteResponse = await getVote(title)
+  if (voteResponse.success)
+    return c.json({ status: 200, message: 'Already notified about this vote' })
 
   // if there is no such vote, make a new entry
-  const createdVote = await newVote(title, start, end)
+  const addVoteResponse = await newVote(title, start, end)
+  if (!addVoteResponse.success) return c.json({ status: 500, addVoteResponse })
 
   // get all verified subscribers from db
-  const subscribers = await getSubscribers()
-  const len = subscribers.length
+  const { success, data, error } = await getSubscribers()
+  if (!success) return c.json({ status: 500, error })
 
-  // check that there are subscribers
-  if (len === 0) return c.json({ status: 500, message: 'no subscribers' })
+  // if there are subscribers
+  if (data) {
+    const bulkSendResponse = await sendNotificationEmails(data) // send notification emails
+    if (bulkSendResponse.status !== 202) return c.json({ bulkSendResponse }) // handle any errors
 
-  // send notification emails
-  const res = await sendNotificationEmails(subscribers)
-  const { status, bulk_id, message } = res
-  if (status !== 202) return res // handle any errors
+    // update the people_notified field for this spacific vote, set notified value to 1
+    const { success, error } = await updateVote(title, data.length)
+    if (!success) return c.json({ status: 400, error })
 
-  // update the people_notified field for this spacific vote, set notified value to 1
-  await updateVote(title, len)
-
-  // return something ...
-  return c.json(res)
+    // return 202
+    return c.json({ status: 202 })
+  }
 })
 
 // Add email to subscribers database, send verification email
@@ -58,25 +59,23 @@ app.post('/subscribers', async (c) => {
   const { email } = await c.req.json()
   const token = await generateToken(email, 30) // create a JWT valid for 30 minutes
   const unsubscribe_token = await generateToken(email) // create a never expiring JWT
-  const res = await subscribe(email, token, unsubscribe_token) // insert into db
+  const { success, error } = await subscribe(email, token, unsubscribe_token) // insert into db
 
   // if insert !ok
-  if (!res) {
-    return c.json({
-      status: 500,
-      message: 'Something went wrong when inserting',
-    })
-  }
+  if (!success) return c.json({ status: 500, error })
 
   // if insert sucessfull
   const mailRes = await sendVerificationEmail(email, token, unsubscribe_token)
 
   // server response
   return c.json({
+    success,
     status: 201,
-    email: email,
-    token: token,
-    unsubscribe_token: unsubscribe_token,
+    data: {
+      email: email,
+      token: token,
+      unsubscribe_token: unsubscribe_token,
+    },
   })
 })
 
@@ -86,9 +85,9 @@ app.get('/subscribers/verify-email', async (c) => {
   const { email } = await verifyToken(token, Bun.env.SECRET as string)
   console.log('requested virification for: ', email)
 
-  const res = await verify(email, token)
-  if (res) return c.text(`subscription confirmed for ${email}`)
-  return c.text(`unable to verify ${email}`)
+  const { success, error } = await verify(email, token)
+  if (!success) return c.json({ status: 500, error })
+  return c.json({ status: 204 })
 })
 
 // Delete from subscribers table and redirects to fronted success || error page
@@ -98,9 +97,9 @@ app.get('/subscribers/unsubscribe', async (c) => {
   const { email } = await verifyToken(token, Bun.env.INFINITE_SECRET as string)
 
   // unsubscribe logic with the database
-  const res = await unsubscribe(email, token)
-  if (res) return c.text('unsubscribe success')
-  return c.text('unsubscribe error')
+  const { success, error } = await unsubscribe(email, token)
+  if (!success) return c.json({ success, status: 500, error })
+  return c.json({ status: 204 })
 })
 
 export default {

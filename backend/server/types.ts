@@ -22,3 +22,18 @@ export type BulkResponse = {
   message: string
   bulk_id?: string
 }
+
+export type Vote = {
+  id: number
+  title: string
+  start?: string
+  end?: string
+  notified?: number
+  people_notified?: number
+}
+
+export type Response<T = void> = {
+  success: boolean // Indicates success or failure
+  data?: T // Resulting data, if any
+  error?: string // Error message, if any
+}
