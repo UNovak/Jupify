@@ -66,6 +66,7 @@ app.post('/subscribers', async (c) => {
 
   // if insert sucessfull
   const mailRes = await sendVerificationEmail(email, token, unsubscribe_token)
+  if (!mailRes.success) return c.json({ status: 500, error: mailRes.err })
 
   // server response
   return c.json({

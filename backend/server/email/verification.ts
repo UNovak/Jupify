@@ -120,9 +120,9 @@ export const sendVerificationEmail = async (
         </html>`)
 
     const response = await mailerSend.email.send(emailParams)
-    return { success: true, message: 'Email sent', response }
-  } catch (error) {
-    console.error('Error sending email:', error)
-    return { success: false, message: 'Failed to send email', error }
+    return { success: true, response }
+  } catch (err) {
+    console.error('Error sending email:', err)
+    return { success: false, err }
   }
 }
