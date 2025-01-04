@@ -1,4 +1,5 @@
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { sendNotificationEmails } from './email/notifications'
 import { sendVerificationEmail } from './email/verification'
 import type { ScrapedData } from './types'
@@ -14,6 +15,12 @@ import {
 } from './utils/turso'
 
 const app = new Hono()
+app.use(
+  '*',
+  cors({
+    origin: `${Bun.env.FRONTEND_DOMAIN}`,
+  }),
+)
 
 app.get('/', async (c) => {
   return c.text('Hello Hono!')
