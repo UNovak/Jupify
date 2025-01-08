@@ -1,9 +1,29 @@
 <script setup lang="ts">
 const email = ref('')
+const submitting = ref(false)
 
-const subscribe = () => {
-  console.log(email.value)
-  // submit form here
+const subscribe = async () => {
+
+  submitting.value = true
+
+  try {
+    const { status, error } = await $fetch('http://localhost:4000/subscribers', {
+      method: 'POST',
+      body: {
+        email: email.value,
+      },
+    })
+
+    console.log('status: ', status)
+    console.log('error: ', error)
+
+  } catch (err) {
+    console.error(err)
+  } finally {
+    setTimeout(() => {
+      submitting.value = false
+    }, 200)
+  }
 }
 </script>
 
@@ -15,7 +35,7 @@ const subscribe = () => {
         v-model:model-value="email"
         type="email"
         placeholder="Your email" />
-      <Button>Notify me</Button>
+      <Button :loading="submitting" :disabled="submitting">Notify me</Button>
     </div>
     <span
       class="font-primary w-1/2 text-center text-base leading-normal text-white/40">
