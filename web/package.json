@@ -12,6 +12,7 @@
   "dependencies": {
     "cva": "npm:class-variance-authority",
     "nuxt": "^3.13.2",
+    "nuxt-icons": "^3.2.1",
     "vue": "latest",
     "vue-router": "latest"
   },
