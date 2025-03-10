@@ -7,7 +7,7 @@ const { isModalOpen, hideModal, component } = useModal()
     <Teleport to="#modal">
       <div
         tabindex="-1"
-        class="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50"
+        class="fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-70"
         v-if="isModalOpen"
         @click="hideModal()">
         <component
