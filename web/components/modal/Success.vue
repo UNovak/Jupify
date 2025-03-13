@@ -1,17 +1,9 @@
-<script setup>
-import { defineEmits, defineProps } from 'vue'
-
-const props = defineProps({
-  email: {
-    type: String,
-    default: '',
-  },
-})
-
+<script setup lang="ts">
+const { email = '' } = defineProps<{ email?: string }>()
 const emit = defineEmits(['close', 'resend'])
 
 const resend = () => {
-  console.log('resensding verification email to: ', props.email)
+  console.log('resensding verification email to: ', email)
 }
 </script>
 
@@ -33,8 +25,8 @@ const resend = () => {
       <h2 class="mb-6 text-3xl font-bold">One last step</h2>
 
       <div class="mb-6 text-white/90">
-        An email has been sent to {{ props.email }}. Follow the instructions to
-        verify your subscription. If you can't find it resend it by clicking
+        An email has been sent to {{ email }}. Follow the instructions to verify
+        your subscription. If you can't find it resend it by clicking
         <button class="text-primary hover:text-gray-600">HERE</button>.
       </div>
 

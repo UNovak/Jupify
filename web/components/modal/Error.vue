@@ -1,7 +1,5 @@
 <script setup>
-import { defineEmits, defineProps, ref } from 'vue'
-
-const emit =  defineEmits(['close'])
+const emit = defineEmits(['close'])
 </script>
 
 <template>
