@@ -1,1 +1,0 @@
-ALTER TABLE `subscribers` ADD `unsubscribe_token` text;

@@ -11,6 +11,7 @@ CREATE TABLE `subscribers` (
 	`created_at` text DEFAULT (CURRENT_TIMESTAMP),
 	`status` text DEFAULT 'subscribed',
 	`token` text,
+	`unsubscribe_token` text,
 	`verified` integer DEFAULT false NOT NULL,
 	`last_update` text DEFAULT (CURRENT_TIMESTAMP)
 );
