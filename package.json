@@ -1,9 +1,8 @@
 {
   "name": "jupify",
   "version": "1.0.0",
-  "workspaces": [
-    "packages/*"
-  ],
+  "type": "module",
+  "workspaces": ["packages/*"],
   "scripts": {
     "dev": "bun --filter frontend --filter api dev",
     "db:run": "bun --filter db db:run",
