@@ -1,35 +1,30 @@
 {
   "compilerOptions": {
-    // Enable latest features
-    "lib": ["ESNext", "DOM"],
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleDetection": "force",
-    "jsx": "react-jsx",
-    "allowJs": true,
-
-    // Bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
-    "outDir": "./dist",
-
-    // Best practices
+    // Type Checking
     "strict": true,
-    "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
-
-    // Some stricter flags
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": true,
 
-    // import aliases
-    "paths": {
-      "@hono/*": ["./server/*"],
-      "@utils/*": ["./utils/*"],
-      "@db/*": ["./db/*"],
-      "@hooks/*": ["./hooks/*"]
-    }
+    // Module Resolution
+    "esModuleInterop": true,
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+
+    // Emit
+    "noEmit": true,
+    "skipLibCheck": true,
+
+    // JavaScript Support
+    "allowJs": true,
+    "useDefineForClassFields": true,
+
+    // Interop Constraints
+    "isolatedModules": true,
+    "allowImportingTsExtensions": true,
+
   }
 }
